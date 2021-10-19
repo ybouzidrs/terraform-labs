@@ -1,1 +1,1 @@
-# terraform-course
+# LEARNING TERRAFORM BY PRACTICE
