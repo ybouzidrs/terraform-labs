@@ -63,7 +63,7 @@ resource "aws_instance" "app_server" {
   provisioner "remote-exec" {
 
     inline = [
-      "cd /home/ubuntu/",
+      "cd /home/ec2-user/",
       "chmod +x web.sh",
       "./web.sh"
     ]
