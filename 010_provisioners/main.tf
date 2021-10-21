@@ -87,6 +87,12 @@ resource "aws_instance" "app_server" {
 #   }
 # }
 
+# resource "null_resource" "app_server_status" {
+#   provisioner "local-exec" {
+#     command = "aws ec2 wait instance-status-ok --instance-ids ${aws_instance.app_server.id}" 
+#   }
+# }
+
 # data "template_file" "private_key" {
 #   template = file("~/Downloads/serguy.pem")  
 # }
