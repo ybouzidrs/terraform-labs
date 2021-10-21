@@ -10,7 +10,7 @@ terraform {
 provider "aws" {
   # Configuration options
   shared_credentials_file = "~/.aws/credentials"
-  profile                 = "gc"
+  profile                 = "set-your-profile"
   region                  = "us-east-1"
 }
 resource "aws_instance" "app_server" {
