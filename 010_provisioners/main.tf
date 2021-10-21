@@ -10,7 +10,7 @@ terraform {
 provider "aws" {
   # Configuration options
   shared_credentials_file = "~/.aws/credentials"
-  profile                 = "default"
+  profile                 = "gc"
   region                  = "us-east-1"
 }
 resource "aws_instance" "app_server" {
@@ -23,7 +23,7 @@ resource "aws_instance" "app_server" {
   }
 
   provisioner "local-exec" {
-    command = "echo instance_id: ${self.id} >> instance_details.txt; echo private_ip: ${self.private_ip} >> instance_details.txt; echo public_ip: ${self.public_ip} >> instance_details.txt"
+    command = "echo instance_id: ${self.id} > instance_details.txt; echo private_ip: ${self.private_ip} >> instance_details.txt; echo public_ip: ${self.public_ip} >> instance_details.txt"
   }
 
   # provisioner "local-exec" {
@@ -34,20 +34,51 @@ resource "aws_instance" "app_server" {
   #     SECRET = "APOx38KDJG0828hhgPIOL"
   #    }
   # }
-  provisioner "remote-exec" {
-    inline = [
-      "sudo yum update -y",
-      "sudo yum install -y httpd",
-      "sudo systemctl start httpd",
-    ]
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "sudo yum update -y",
+  #     "sudo yum install -y httpd",
+  #     "sudo systemctl start httpd",
+  #   ]
 
+  #   connection {
+  #   type     = "ssh"
+  #   user     = "ec2-user"
+  #   host = self.public_ip
+  #   private_key = "${file("~/Downloads/serguy.pem")}"
+  #   }
+  # }
+  provisioner "file" {
+    source = "./web.sh"
+    destination = "/home/ec2-user/web.sh"
+    
     connection {
     type     = "ssh"
     user     = "ec2-user"
     host = self.public_ip
     private_key = "${file("~/Downloads/serguy.pem")}"
     }
-  } 
+  }
+
+  provisioner "remote-exec" {
+
+    inline = [
+      "cd /home/ubuntu/",
+      "chmod +x web.sh",
+      "./web.sh"
+    ]
+    
+    connection {
+      type = "ssh"
+      user = "ec2-user"
+      host = self.public_ip
+      private_key = file(("~/Downloads/serguy.pem"))
+    }
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # resource "null_resource" "completion_date" {
