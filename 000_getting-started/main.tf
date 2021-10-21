@@ -1,6 +1,6 @@
 provider "aws" {
   # Configuration options
-  shared_credentials_file = "~.aws/credentials"
+  shared_credentials_file = "~/.aws/credentials"
   profile                 = "set-your-profile"
   region                  = "us-east-1"
 }
