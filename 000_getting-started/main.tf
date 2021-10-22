@@ -17,4 +17,6 @@ resource "aws_instance" "app_server" {
   lifecycle {
     create_before_destroy = true
   }
+
+  
 }
