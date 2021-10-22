@@ -22,6 +22,7 @@ resource "aws_instance" "app_server" {
     Name = "serguy-ec2-instance"
   }
 
+# Working with local-exec
   provisioner "local-exec" {
     command = "echo instance_id: ${self.id} > instance_details.txt; echo private_ip: ${self.private_ip} >> instance_details.txt; echo public_ip: ${self.public_ip} >> instance_details.txt"
   }
@@ -34,6 +35,10 @@ resource "aws_instance" "app_server" {
   #     SECRET = "APOx38KDJG0828hhgPIOL"
   #    }
   # }
+
+
+  # Working with remote-exec
+
   # provisioner "remote-exec" {
   #   inline = [
   #     "sudo yum update -y",
@@ -48,33 +53,37 @@ resource "aws_instance" "app_server" {
   #   private_key = "${file("~/Downloads/serguy.pem")}"
   #   }
   # }
-  provisioner "file" {
-    source = "./web.sh"
-    destination = "/home/ec2-user/web.sh"
-    
-    connection {
-    type     = "ssh"
-    user     = "ec2-user"
-    host = self.public_ip
-    private_key = "${file("~/Downloads/serguy.pem")}"
-    }
-  }
 
-  provisioner "remote-exec" {
+# Working with files
 
-    inline = [
-      "cd /home/ec2-user/",
-      "chmod +x web.sh",
-      "./web.sh"
-    ]
+#   provisioner "file" {
+#     source = "./web.sh"
+#     destination = "/home/ec2-user/web.sh"
     
-    connection {
-      type = "ssh"
-      user = "ec2-user"
-      host = self.public_ip
-      private_key = file(("~/Downloads/serguy.pem"))
-    }
-  }
+#     connection {
+#     type     = "ssh"
+#     user     = "ec2-user"
+#     host = self.public_ip
+#     private_key = "${file("~/Downloads/serguy.pem")}"
+#     }
+#   }
+
+# Working with files and remote-exec
+#   provisioner "remote-exec" {
+
+#     inline = [
+#       "cd /home/ec2-user/",
+#       "chmod +x web.sh",
+#       "./web.sh"
+#     ]
+    
+#     connection {
+#       type = "ssh"
+#       user = "ec2-user"
+#       host = self.public_ip
+#       private_key = file(("~/Downloads/serguy.pem"))
+#     }
+#   }
 
   lifecycle {
     create_before_destroy = false
